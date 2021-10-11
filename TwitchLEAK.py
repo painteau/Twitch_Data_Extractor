@@ -75,21 +75,9 @@ for user in users:
                 #print(f'Date: {date_time_obj.date()})
                 print(f"Found total gross of {round(c.convert(float(total_revenue_gross), 'USD', 'EUR', date=date_formatted), 2)} € on {date_formatted}")
 
-                #print (f"---------")
-                #print (f"Details :")
-                #print (f"payout_entity_id : {row[1]}")
-                #print (f"ad_share_gross : {row[2]} $")
-                #print (f"sub_share_gross : {row[3]} $")
-                #print (f"bits_share_gross : {row[4]} $")
-                #print (f"bits_developer_share_gross : {row[5]} $")
-                #print (f"bits_extension_share_gross : {row[6]} $")
-                #print (f"prime_sub_share_gross : {row[7]} $")
-                #print (f"bit_share_ad_gross : {row[8]} $")
-                #print (f"fuel_rev_gross : {row[9]} $")
-                #print (f"bb_rev_gross : {row[10]} $")
-                #print (f"experimental_rev_gross : {row[12]} $")
-
     print(f"Computing all data...")
+   
+
     # Extracting data for this user
 
     tax_file = csv.reader(open('tax_withholding_rates.csv', "r"), delimiter=",")
@@ -110,7 +98,9 @@ for user in users:
 
     logging.info(f'{user.name} has the {finance_category} status, since {date_formatted}, with a royalty rate of {royalty_withholding_rate}')
     logging.info("----  RECAP  -------")
-    # Final PRINTING
+    
+
+    # Final export in file
 
     for key in data:
         total_revenue_overall = total_revenue_overall + float(data[key])
@@ -125,6 +115,6 @@ for user in users:
     logging.info(f"With an median revenue of  : {str(median_monthly_revenue)} € / month") 
     logging.info(f"and an average revenue of  : {str(average_monthly_revenue)} € / month") 
 
-    # Clean handler
+    # Clean all handlers
     logger.removeHandler(file_handler)
     logger.removeHandler(stream_handler)
