@@ -10,36 +10,26 @@ from currency_converter import CurrencyConverter
 
 # VARIABLES AND CONSTANTS
 
-path_dir = r'D:/TWITCH_DATA/all_revenues' # CSV Directory without ending slash !
+path_dir = r'D:/TWITCH_DATA/all_revenues' # CSV base Directory without ending slash !
 
 
 
 #FUNCTIONS AND CLASSES
 
 clear = lambda: os.system('cls')
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
 c = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True)
 
 
 print("--------------------")
 
-# Retrieve ID channel
-
-my_channel = input("What is the Username of the Channel : ")
+# Retrieving ID channel from Twitch API
+print("Please enter the Twitch username you want to extract data from the databases.")
+print("You can write one username, or multiple with comma separation. Ex : lirik,ninja,shroud")
+my_channel = input("Enter usernames : ")
 client = TwitchClient(client_id, oauth_token)
 users = client.users.translate_usernames_to_ids(my_channel)
-#users = client.users.translate_usernames_to_ids(['lirik', 'giantwaffle'])
+# You can write one username in prompt, or multiple with comma separation. Ex : lirik,ninja,shroud
+
 for user in users:
     #RESET DATA 
     data = {}
@@ -50,29 +40,16 @@ for user in users:
 
     # LOGGER SETUP
 
-    # création de l'objet logger qui va nous servir à écrire dans les logs
     logger = logging.getLogger()
-    # on met le niveau du logger à DEBUG, comme ça il écrit tout
     logger.setLevel(logging.DEBUG)
-     # création d'un formateur qui va ajouter le temps, le niveau
-    # de chaque message quand on écrira un message dans le log
     formatter = logging.Formatter('%(message)s')
-    # création d'un handler qui va rediriger une écriture du log vers
-    # un fichier en mode 'append', avec 1 backup et une taille max de 1Mo
     file_handler = RotatingFileHandler(f'log/{user.name}.log', 'a', 1000000, 1)
-    # on lui met le niveau sur DEBUG, on lui dit qu'il doit utiliser le formateur
-    # créé précédement et on ajoute ce handler au logger
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
-    # création d'un second handler qui va rediriger chaque écriture de log
-    # sur la console
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.INFO)
     logger.addHandler(stream_handler)
-    #logging.debug('This message should not go to the log file')
-    #logging.info('but should this')
-    #logging.warning('And this, too')
 
     clear()
 
@@ -131,9 +108,6 @@ for user in users:
                 date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M:%SZ')
                 date_formatted = date_time_obj.date()  
 
-    print("--------------------")
-    print("----  RECAP  -------")
-    print("--------------------")
     logging.info(f'{user.name} has the {finance_category} status, since {date_formatted}, with a royalty rate of {royalty_withholding_rate}')
     logging.info("----  RECAP  -------")
     # Final PRINTING
@@ -150,3 +124,7 @@ for user in users:
     # printing result average 
     logging.info(f"With an median revenue of  : {str(median_monthly_revenue)} € / month") 
     logging.info(f"and an average revenue of  : {str(average_monthly_revenue)} € / month") 
+
+    # Clean handler
+    logger.removeHandler(file_handler)
+    logger.removeHandler(stream_handler)
