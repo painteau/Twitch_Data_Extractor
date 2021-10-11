@@ -10,7 +10,7 @@ from currency_converter import CurrencyConverter
 
 # VARIABLES AND CONSTANTS
 
-path_dir = r'D:/TWITCH_DATA/all_revenues' # CSV base Directory without ending slash !
+path_dir = r'C:/Twitch-Data-Extractor/Twitch_Data_Extractor/all_revenues' # CSV base Directory without ending slash !
 
 
 
